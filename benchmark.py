@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fixed-work, deterministic CPU scaling benchmark. Python standard library only."""
 import csv
+from decimal import Decimal, InvalidOperation
 import hashlib
 import html
 import json
@@ -18,9 +19,17 @@ from pathlib import Path
 _BUFFER = None
 
 def integer(value, name, minimum, maximum):
-    if isinstance(value, bool) or not isinstance(value, int) or not minimum <= value <= maximum:
-        raise ValueError(f'{name} must be an integer from {minimum} to {maximum}')
-    return value
+    # Edited Brainlife number fields can arrive as strings, unlike untouched defaults.
+    error = f'{name} must be a whole number from {minimum} to {maximum}; received {value!r}'
+    if isinstance(value, bool) or not isinstance(value, (int, float, str)):
+        raise ValueError(error)
+    try:
+        number = Decimal(str(value).strip())
+    except InvalidOperation:
+        raise ValueError(error) from None
+    if not number.is_finite() or not minimum <= number <= maximum or number != number.to_integral_value():
+        raise ValueError(error)
+    return int(number)
 
 def validate(raw):
     value = raw.get('workers', '1,2,4,8,16')

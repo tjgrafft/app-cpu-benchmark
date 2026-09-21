@@ -22,7 +22,7 @@ The Brainlife app requires a `neuro/anat/t1w` placeholder input for process-edit
 | `memory_mb_per_worker` | 16 | MiB allocated and touched per worker |
 | `seed` | 42 | Workload and execution-order seed |
 
-All numeric parameters must be integers. Bounds and a total-work safety limit are enforced. App parameters **do not change the AWS job allocation**. For example, 32 workers on Heavy CPU oversubscribes its 16 vCPUs.
+All numeric parameters must be whole numbers. Whole-number strings from edited Brainlife form fields are normalized automatically. Bounds and a total-work safety limit are enforced. App parameters **do not change the AWS job allocation**. For example, 32 workers on Heavy CPU oversubscribes its 16 vCPUs.
 
 ## Suggested experiments
 
