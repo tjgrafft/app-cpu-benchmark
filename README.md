@@ -49,7 +49,3 @@ This is a synthetic CPU-throughput benchmark, not a scientific algorithm, GPU be
 ```bash
 python3 -m unittest discover -s tests -v
 ```
-
-## Brainlife
-
-`app.json` is the registration manifest. Select **AWS Batch Heavy CPU** when running in Brainlife. Resource availability depends on the project's permissions. No input dataset is required.
