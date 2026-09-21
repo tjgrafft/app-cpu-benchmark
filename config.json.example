@@ -1,0 +1,8 @@
+{
+  "workers": "1,2,4,8,16",
+  "tasks": 64,
+  "iterations": 200000,
+  "repeats": 3,
+  "memory_mb_per_worker": 16,
+  "seed": 42
+}

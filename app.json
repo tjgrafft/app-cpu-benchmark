@@ -1,0 +1,58 @@
+{
+  "name": "CPU Scaling Benchmark",
+  "desc": "Benchmark fixed-work CPU scaling at configurable worker counts, with runtime, CPU utilization, memory observations, speedup, and deterministic result verification.",
+  "github": "tjgrafft/app-cpu-benchmark",
+  "github_branch": "main",
+  "retry": 0,
+  "inputs": [],
+  "outputs": [
+    {
+      "id": "report",
+      "datatype": "5e56dc330f7fa604cc3cc291",
+      "desc": "CPU scaling report with downloadable JSON and CSV"
+    }
+  ],
+  "config": {
+    "workers": {
+      "type": "string",
+      "default": "1,2,4,8,16",
+      "desc": "Comma-separated worker process counts. Include 1 for baseline. Max 64; values above the resource CPU allocation test oversubscription, not larger instances."
+    },
+    "tasks": {
+      "type": "number",
+      "default": 64,
+      "min": 1,
+      "max": 2048,
+      "desc": "Fixed number of independent work items per trial. Must be at least the largest worker count."
+    },
+    "iterations": {
+      "type": "number",
+      "default": 200000,
+      "min": 1000,
+      "max": 2000000,
+      "desc": "PBKDF2 SHA-256 iterations per work item. Increase to reduce process-startup overhead relative to computation."
+    },
+    "repeats": {
+      "type": "number",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "desc": "Trials per worker count. Order is shuffled reproducibly each round."
+    },
+    "memory_mb_per_worker": {
+      "type": "number",
+      "default": 16,
+      "min": 0,
+      "max": 256,
+      "desc": "MiB allocated and page-touched per worker. Initialization is included in wall time. Not a memory-bandwidth test."
+    },
+    "seed": {
+      "type": "number",
+      "default": 42,
+      "min": 0,
+      "max": 2147483647,
+      "desc": "Deterministic workload and trial-order seed; use the same seed across comparisons."
+    }
+  },
+  "projects": []
+}
