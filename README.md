@@ -1,6 +1,6 @@
 # CPU Scaling Benchmark
 
-A no-input Brainlife app for benchmarking **fixed total work** across CPU worker counts. Designed for the Heavy CPU resource (16 vCPUs / 28 GiB job RAM), but usable on any Python 3 Linux resource.
+A Brainlife app for benchmarking **fixed total work** across CPU worker counts. Designed for the Heavy CPU resource (16 vCPUs / 28 GiB job RAM), but usable on any Python 3 Linux resource.
 
 ## Quick start
 
@@ -9,7 +9,7 @@ cp config.json.example config.json
 ./main
 ```
 
-No pip packages, external datasets, AWS credentials, or image pulls are required by the app. It uses the runner's Python 3 and records Python/OpenSSL/platform versions. It does not execute the Batch bootstrap itself. Brainlife supplies `config.json`, then runs `main`.
+The Brainlife app requires a `neuro/anat/t1w` placeholder input for process-editor compatibility, but the benchmark does not read or use it. Standalone runs need no dataset. No pip packages, AWS credentials, or image pulls are required by the computation. Input staging time is excluded from benchmark measurements. It uses the runner's Python 3 and records Python/OpenSSL/platform versions. It does not execute the Batch bootstrap itself. Brainlife supplies `config.json`, then runs `main`.
 
 ## Parameters
 

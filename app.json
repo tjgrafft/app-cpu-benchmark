@@ -4,7 +4,14 @@
   "github": "tjgrafft/app-cpu-benchmark",
   "github_branch": "main",
   "retry": 0,
-  "inputs": [],
+  "inputs": [
+    {
+      "id": "t1w",
+      "datatype": "58c33bcee13a50849b25879a",
+      "optional": false,
+      "desc": "Required placeholder T1w input for Brainlife app selection. The benchmark does not read or use this image."
+    }
+  ],
   "outputs": [
     {
       "id": "report",
@@ -52,6 +59,11 @@
       "min": 0,
       "max": 2147483647,
       "desc": "Deterministic workload and trial-order seed; use the same seed across comparisons."
+    },
+    "t1": {
+      "type": "input",
+      "input_id": "t1w",
+      "file_id": "t1"
     }
   },
   "projects": []
