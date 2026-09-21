@@ -100,6 +100,7 @@ def environment():
 def render_report(result, folder):
     folder.mkdir(parents=True, exist_ok=True)
     (folder / 'html').mkdir(exist_ok=True)  # report/html datatype's required directory
+    (folder / 'html' / 'README.txt').write_text('Open ../index.html for the benchmark report.\n')
     (folder / 'results.json').write_text(json.dumps(result, indent=2) + '\n')
     with (folder / 'trials.csv').open('w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=list(result['trials'][0]))
