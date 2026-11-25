@@ -1,6 +1,82 @@
-# CPU Scaling Benchmark
+<h1 align="center">CPU Scaling Benchmark</h1>
 
-A Brainlife app for benchmarking **fixed total work** across CPU worker counts. Designed for the Heavy CPU resource (16 vCPUs / 28 GiB job RAM), but usable on any Python 3 Linux resource.
+<p align="center">
+  Utility that benchmarks CPU scaling of a fixed PBKDF2 SHA-256 workload across configurable worker counts and reports runtime, speedup, CPU utilisation and memory in an HTML report.
+</p>
+
+<p align="center">
+  <a href="https://github.com/brainlife/abcd-spec"><img src="https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg" alt="ABCD Spec v1.1"></a>
+  <a href="https://doi.org/10.25663/brainlife.app.977"><img src="https://img.shields.io/badge/Brainlife-brainlife.app.977-blue.svg" alt="Run on brainlife.io"></a>
+</p>
+
+## At a glance
+
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Utility that benchmarks CPU scaling of a fixed PBKDF2 SHA-256 workload across configurable worker counts and reports runtime, speedup, CPU utilisation and memory in an HTML report.**
+
+Runs a fixed number of deterministic work items with Python multiprocessing at each requested worker count, repeating trials in shuffled order, and verifies results while recording wall time, CPU use and memory. Use it to check how many cores a brainlife compute resource effectively provides; it is not a neuroimaging analysis. The T1w input is a required placeholder and is never read.
+
+| | |
+|---|---|
+| **Inputs** | `neuro/anat/t1w` |
+| **Outputs** | `report/html` |
+| **Run it** | [doi.org/10.25663/brainlife.app.977](https://doi.org/10.25663/brainlife.app.977) |
+
+#### Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `t1w` | `neuro/anat/t1w` | yes | Required placeholder T1w input for Brainlife app selection. The benchmark does not read or use this image. |
+
+#### Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `report` | `report/html` | CPU scaling report with downloadable JSON and CSV |
+
+<details>
+<summary><b>Parameters</b> (6)</summary>
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `workers` | string | `1,2,4,8,16` | Comma-separated worker process counts. Include 1 for baseline. Max 64; values above the resource CPU allocation test oversubscription, not larger instances. |
+| `tasks` | number | `64` | Fixed number of independent work items per trial. Must be at least the largest worker count. |
+| `iterations` | number | `200000` | PBKDF2 SHA-256 iterations per work item. Increase to reduce process-startup overhead relative to computation. |
+| `repeats` | number | `3` | Trials per worker count. Order is shuffled reproducibly each round. |
+| `memory_mb_per_worker` | number | `16` | MiB allocated and page-touched per worker. Initialization is included in wall time. Not a memory-bandwidth test. |
+| `seed` | number | `42` | Deterministic workload and trial-order seed; use the same seed across comparisons. |
+
+</details>
+
+<!-- brainlife-app:end -->
+
+## Running the App
+
+### On brainlife.io
+
+Open the App at [doi.org/10.25663/brainlife.app.977](https://doi.org/10.25663/brainlife.app.977), choose `neuro/anat/t1w` from your project, set the parameters and press **Execute**. The results are saved to your project as `report/html`.
+
+### Locally
+
+You need [`jq`](https://jqlang.github.io/jq/).
+
+1. Clone this repository.
+2. Create `config.json` with the paths to your inputs and the parameters:
+
+   ```json
+   {
+       "t1": "/path/to/t1w/t1",
+       "workers": "1,2,4,8,16",
+       "tasks": 64,
+       "iterations": 200000,
+       "repeats": 3,
+       "memory_mb_per_worker": 16,
+       "seed": 42
+   }
+   ```
+
+3. Run `./main`.
 
 ## Quick start
 
@@ -34,18 +110,20 @@ All numeric parameters must be whole numbers. Whole-number strings from edited B
 
 Each trial processes exactly the same tasks using a multiprocessing pool (spawn, chunksize 1). Processes avoid Python's GIL bottleneck. Each task computes deterministic PBKDF2 output; ordered task outputs are hashed into a trial checksum. Every trial must have the same checksum or the app fails. Worker counts are shuffled for each repeat with a seeded RNG to reduce order bias.
 
-## Outputs
-
-`report/index.html` displays median runtime, min/max spread, speedup relative to one worker, parallel efficiency, and average busy CPU equivalents. `report/results.json` contains raw trials, checksums, configuration and environment; `report/trials.csv` provides raw measurements. The `report/html/` directory satisfies Brainlife's `report/html` datatype.
-
-Wall time includes pool startup, memory initialization, computation and pool shutdown. It excludes AWS queueing, instance startup and Brainlife bootstrap. Kernel CPU seconds sum process CPU time spent inside the computational function; dividing by end-to-end wall time estimates average busy CPU equivalents and excludes setup overhead. Peak RSS is the maximum *individual worker* observation, not aggregate or peak job RAM.
-
-Host CPU counts and affinity may exceed a container's Batch allocation; cgroup limits are recorded where exposed. Check the job's actual AWS allocation when interpreting results. vCPUs can be simultaneous hardware threads, so 16 vCPUs does not imply 16 physical cores or 16x speedup. Results depend on hardware, host load, Python/OpenSSL versions, and workload size.
-
-This is a synthetic CPU-throughput benchmark, not a scientific algorithm, GPU benchmark, BLAS/OpenMP threading benchmark, or prediction of an app's output quality. Its exact checksums demonstrate determinism of this workload only.
-
 ## Tests
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+## Citing
+
+If you use this App, please cite it, the software it builds on and brainlife.io:
+
+- CPU Scaling Benchmark. brainlife.io App. [doi:10.25663/brainlife.app.977](https://doi.org/10.25663/brainlife.app.977)
+- Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
+- Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
+
+## Authors
+
+Maintained by [@tjgrafft](https://github.com/tjgrafft).
